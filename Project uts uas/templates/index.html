@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask CRUD MySQL - Game Style</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/nes.css@latest/css/nes.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        @keyframes pixelatedFadeIn {
+            0% {
+                filter: contrast(0) brightness(0);
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            100% {
+                filter: contrast(1) brightness(1);
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .intro-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .slide {
+            animation: pixelatedFadeIn 0.8s ease-in-out;
+        }
+
+        .intro-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .intro-slide {
+            display: none;
+            animation: pixelatedFadeIn 1s ease-in-out;
+        }
+
+        .intro-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        body {
+            background: url("{{ url_for('static', filename='file/8bit.gif') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Press Start 2P', cursive;
+            color: white;
+            text-align: center;
+        }
+
+
+        h1,
+        h2 {
+            text-shadow: 3px 3px 0px #ff0000;
+            margin-top: 20px;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .modal-content {
+            background-color: #222;
+            color: white;
+            border: 3px solid red;
+        }
+
+        .start-btn {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 15px 30px;
+            border: 3px solid white;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="intro-container" id="intro">
+        <div id="slide1" class="slide">WELCOME TO</div>
+        <div id="slide2" class="slide" style="display:none;">CRUD 8 BIT STYLE</div>
+        <div id="slide3" class="slide" style="display:none;">BY FATIK</div>
+        <div id="slide4" class="slide" style="display:none; cursor: pointer;">CLICK TO START</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let slides = ["slide1", "slide2", "slide3", "slide4"];
+            let audio = document.getElementById("slideSound");
+
+            slides.forEach((id, index) => {
+                setTimeout(() => {
+                    if (index > 0) document.getElementById(slides[index - 1]).style.display = "none";
+                    document.getElementById(id).style.display = "block";
+                    playSound();
+                }, index * 1000);
+            });
+
+            document.getElementById("slide4").addEventListener("click", () => {
+                document.getElementById("intro").style.display = "none";
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let audio = document.getElementById("bgMusic");
+            function playAudio() {
+                audio.play().catch(error => console.log("Autoplay gagal:", error));
+                document.body.removeEventListener("click", playAudio);
+            }
+            document.body.addEventListener("click", playAudio);
+        });
+        function playSound() {
+        let audio = document.getElementById("slideSound");
+        if (audio) {
+            audio.play().catch(error => console.log("Autoplay gagal:", error));
+        }
+    }
+    </script>
+
+    <audio id="bgMusic" loop>
+        <source src="{{ url_for('static', filename='audio/game-music.mp3') }}" type="audio/mpeg">
+    </audio>
+</head>
+
+<body>
+    <header class="container-fluid bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+        <h1 class="m-0">Profile Pengguna</h1>
+        <div class="d-flex align-items-center" style="cursor: pointer;" onclick="window.location.href='{{ url_for('biografi') }}'">
+            <img src="{{ url_for('static', filename='file/pp.jpeg') }}" alt="Profile" class="rounded-circle me-2" style="width: 70px; height: 70px;>
+            <span id="username">Ahmad Fatik Aji Bagaskara</span>
+        </div>
+    </header>
+
+    <h1>Welcome to Game-Style CRUD</h1>
+    <button class="nes-btn is-primary" onclick="window.open('https://www.8bbit.com/', '_blank')">Start Game</button>
+
+    <div class="container-fluid mt-5" style="max-width: 90vw; margin: auto;">
+        <h2 class="mb-4 text-center">Daftar Pengguna</h2>
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Cari Mobil..."
+            onkeyup="searchTable()">
+        <button class="btn btn-primary mb-3" onclick="showAddModal()">Tambah Pengguna</button>
+        <table class="table table-bordered table-dark table-striped text-center">
+            <thead class="table-light text-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Jenis Mobil</th>
+                    <th>Tahun Rilis</th>
+                    <th>Asal Mobil</th>
+                    <th>Warna</th>
+                    <th>Mesin</th> <!-- Mengganti "Foto" menjadi "Mesin" -->
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="carTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Modal Tambah/Edit -->
+    <div class="modal fade" id="carModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Tambah Mobil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="carId">
+                    <label>Jenis Mobil:</label>
+                    <input type="text" id="jenis_mobil" class="form-control">
+                    <label>Tahun Rilis:</label>
+                    <input type="number" id="tahun_rilis" class="form-control">
+                    <label>Asal Mobil:</label>
+                    <input type="text" id="asal_mobil" class="form-control">
+                    <label>Warna:</label>
+                    <input type="text" id="warna" class="form-control">
+                    <label>Mesin:</label> <!-- Mengubah "Foto (URL)" menjadi "Mesin" -->
+                    <input type="text" id="mesin" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-success" onclick="saveCar()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", fetchCars);
+
+        function fetchCars() {
+            fetch("/cars")
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.getElementById("carTable");
+                    table.innerHTML = "";
+                    data.forEach(car => {
+                        table.innerHTML += `
+                            <tr>
+                                <td>${car.id}</td>
+                                <td>${car.jenis_mobil}</td>
+                                <td>${car.tahun_rilis}</td>
+                                <td>${car.asal_mobil}</td>
+                                <td>${car.warna}</td>
+                                <td>${car.mesin}</td> <!-- Mengubah dari "Foto" ke "Mesin" -->
+                                <td>
+                                    <button class="btn btn-warning" onclick="editCar(${car.id}, '${car.jenis_mobil}', '${car.tahun_rilis}', '${car.asal_mobil}', '${car.warna}', '${car.mesin}')">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteCar(${car.id})">Hapus</button>
+                                </td>
+                            </tr>`;
+                    });
+                });
+        }
+
+        function showAddModal() {
+            document.getElementById("carId").value = "";
+            document.getElementById("jenis_mobil").value = "";
+            document.getElementById("tahun_rilis").value = "";
+            document.getElementById("asal_mobil").value = "";
+            document.getElementById("warna").value = "";
+            document.getElementById("mesin").value = "";
+            document.getElementById("modalTitle").innerText = "Tambah Mobil";
+
+            var modal = new bootstrap.Modal(document.getElementById('carModal'));
+            modal.show();
+        }
+
+        function editCar(id, jenis_mobil, tahun_rilis, asal_mobil, warna, mesin) {
+            document.getElementById("carId").value = id;
+            document.getElementById("jenis_mobil").value = jenis_mobil;
+            document.getElementById("tahun_rilis").value = tahun_rilis;
+            document.getElementById("asal_mobil").value = asal_mobil;
+            document.getElementById("warna").value = warna;
+            document.getElementById("mesin").value = mesin;
+
+            document.getElementById("modalTitle").innerText = "Edit Mobil";
+
+            var modal = new bootstrap.Modal(document.getElementById('carModal'));
+            modal.show();
+        }
+
+        function deleteCar(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus mobil ini?")) {
+                fetch(`/cars/${id}`, { method: "DELETE" })
+                    .then(response => response.json())
+                    .then(() => fetchCars())
+                    .catch(error => console.error("Error:", error));
+            }
+        }
+
+        function saveCar() {
+            let id = document.getElementById("carId").value;
+            let carData = {
+                jenis_mobil: document.getElementById("jenis_mobil").value,
+                tahun_rilis: document.getElementById("tahun_rilis").value,
+                asal_mobil: document.getElementById("asal_mobil").value,
+                warna: document.getElementById("warna").value,
+                mesin: document.getElementById("mesin").value
+            };
+
+            let url = "/cars";
+            let method = id ? "PUT" : "POST";
+            if (id) url += `/${id}`;
+
+            fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(carData)
+            }).then(() => {
+                var modal = bootstrap.Modal.getInstance(document.getElementById('carModal'));
+                modal.hide();
+                fetchCars();
+            });
+        }
+        
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

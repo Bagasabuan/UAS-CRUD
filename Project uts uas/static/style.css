@@ -1,0 +1,8 @@
+
+body {
+    background: url('/static/background.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+    text-align: center;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profil</title>
+    <link rel="stylesheet" href="https://unpkg.com/nes.css@latest/css/nes.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #212529;
+            color: white;
+            text-align: center;
+        }
+        header {
+            background-color: #000;
+            padding: 1em;
+        }
+        section {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px;
+            background-color: #ffcc00;
+            color: black;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ffaa00;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 class="nes-text is-primary">Profil Saya</h1>
+    </header>
+
+    <section>
+        <h2 class="nes-text is-success">Data Pribadi</h2>
+        <img src="/static/file/pp.jpeg" alt="Profile Picture" width="200px" class="nes-avatar is-large">
+        <p><strong>Nama:</strong> Ahmad Fatik Aji Bagaskara</p>
+        <p><strong>Kelahiran:</strong> 04 Juni 2006</p>
+        <p><strong>Email:</strong> fatikbagas250@gmail.com</p>
+
+        <h2 class="nes-text is-warning">Pendidikan</h2>
+        <p><strong>SD:</strong> MI NEGRI 1 PALEMBANG (Tahun Lulus: 2017)</p>
+        <p><strong>SMP:</strong> MTS NEGRI 1 PALEMBANG (Tahun Lulus: 2020)</p>
+        <p><strong>SMA:</strong> SMAT KRIDA NUSANTARA BANDUNG (Tahun Lulus: 2023)</p>
+
+        <h2 class="nes-text is-error">Pengalaman Saya</h2>
+        <p><strong>JUARA II</strong> - Cepat Tepat Matematik Tingkat Sekolah</p>
+        <p><strong>JUARA II</strong> - Pramuka tingkat Provinsi Palembang</p>
+        <p><strong>JUARA II</strong> - Hadroh tingkat Provinsi Bandung</p>
+        <p><strong>Bela Negara</strong> - Kodam Siliwangi Bandung (2022)</p>
+        <p><strong>Progamer</strong> - Website</p>
+
+<button onclick="window.location.href='{{ url_for('home') }}'">Kembali ke Beranda</button>
+    </section>
+</body>
+
+</html>
